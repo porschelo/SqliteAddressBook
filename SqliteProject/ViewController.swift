@@ -55,20 +55,11 @@ class ViewController: UIViewController {
     }
     
     func loadData() {
-        
         db.getData()
-        
-//        [Person(name: "Eric", phoneNumber: "1234"), Person(name: "Tanya", phoneNumber: "5678")].forEach {
-//            ViewController.dataSource.append($0)
-//        }
     }
     
-
-    
     @objc func addContactPerson(_ sender: UIButton) {
-        
-        navigationController?.pushViewController(AddContactPersonViewController(), animated: true)
-        
+        navigationController?.pushViewController(ContactPersonViewController(), animated: true)
     }
 }
 
@@ -89,11 +80,15 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        db.removeData(idNumber: ViewController.dataSource[indexPath.row].idNumber)
+        
         ViewController.dataSource.remove(at: indexPath.row)
         
-        db.removeData(dataId: Int64(indexPath.row))
-        
         tableView.reloadData()
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        navigationController?.pushViewController(ContactPersonViewController(index: indexPath.row), animated: true)
     }
     
 }

@@ -13,6 +13,7 @@ class Database {
     var db: Connection!
     var users: Table!
     var id: Expression<Int64>!
+    var idNumber: Expression<Double>!
     var name: Expression<String>!
     var phoneNumber: Expression<String>!
     
@@ -23,11 +24,13 @@ class Database {
             
             users = Table("user")
             id = Expression<Int64>("id")
+            idNumber = Expression<Double>("idNumber")
             name = Expression<String>("name")
             phoneNumber = Expression<String>("phoneNumber")
             
             try db.run(users.create(ifNotExists: true) { t in
                 t.column(id, primaryKey: true)
+                t.column(idNumber)
                 t.column(name)
                 t.column(phoneNumber)
             })
@@ -37,29 +40,37 @@ class Database {
         }
     }
     
-    func insertData(name: String, phoneNumber: String) {
+    func insertData(idNumber: Double, name: String, phoneNumber: String) {
         do {
-            try db?.run(users.insert(self.name <- name, self.phoneNumber <- phoneNumber))
+            try db?.run(users.insert(self.idNumber <- idNumber, self.name <- name, self.phoneNumber <- phoneNumber))
         } catch {
             print(error)
         }
         
     }
     
-    func removeData(dataId: Int64) {
+    func removeData(idNumber: Double) {
         do {
-            try db?.run(users.filter(id == dataId).delete())
+            try db?.run(users.filter(self.idNumber == idNumber).delete())
+        } catch {
+            print(error)
+        }
+    }
+    
+    func updateData(idNumber: Double, name: String, phoneNumber: String) {
+        do {
+            try db?.run(users.filter(self.idNumber == idNumber).update(self.name <- name, self.phoneNumber <- phoneNumber))
         } catch {
             print(error)
         }
     }
     
     func getData() {
+        ViewController.dataSource = []
         do {
             if let users = try db?.prepare(users) {
                 for user in users {
-                    ViewController.dataSource = []
-                    ViewController.dataSource.append(Person(name: user[name], phoneNumber: user[phoneNumber]))
+                    ViewController.dataSource.append(Person(idNumber: user[idNumber], name: user[name], phoneNumber: user[phoneNumber]))
                 }
             }
         } catch {

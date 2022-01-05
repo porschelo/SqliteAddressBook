@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 import SQLite
 
-class AddContactPersonViewController: UIViewController {
+class ContactPersonViewController: UIViewController {
     
     var nameLabel: UILabel!
     var phoneNumberLabel: UILabel!
@@ -17,7 +17,19 @@ class AddContactPersonViewController: UIViewController {
     var phoneNumberTextField: UITextField!
     var confirmButton: UIButton!
     
+    var index: Int?
+    
     let formGap: CGFloat = 20
+    
+    init(index: Int? = nil) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.index = index
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,7 +40,8 @@ class AddContactPersonViewController: UIViewController {
           image: UIImage(systemName: "chevron.backward"),
             style:.plain ,
           target:self ,
-          action: #selector(backToPreviousView))
+          action: #selector(backToPreviousView)
+        )
         returnButton.tintColor = .black
         
         navigationItem.leftBarButtonItem = returnButton
@@ -74,17 +87,36 @@ class AddContactPersonViewController: UIViewController {
         confirmButton.center.x = view.center.x
         confirmButton.addTarget(self, action: #selector(confirm), for: .touchUpInside)
         
+        //編輯
+        if index != nil {
+            nameTextField.text = ViewController.dataSource[index!].name
+            phoneNumberTextField.text = ViewController.dataSource[index!].phoneNumber
+        }
+        
         view.addSubviews(nameLabel, nameTextField, phoneNumberLabel, phoneNumberTextField, confirmButton)
     }
     
     @objc func confirm(_ sender: UIButton) {
-        let newContactPerson = Person(name: nameTextField.text ?? "", phoneNumber: phoneNumberTextField.text ?? "")
         
-        ViewController.dataSource.append(newContactPerson)
-        
+        let contactPerson = Person(name: nameTextField.text ?? "", phoneNumber: phoneNumberTextField.text ?? "")
         let db = Database(withSqlite: "contact_person.sqlite3")
         
-        db.insertData(name: nameTextField.text ?? "", phoneNumber: phoneNumberTextField.text ?? "")
+        //編輯
+        if index != nil {
+            ViewController.dataSource[index!].name = nameTextField.text ?? ""
+            ViewController.dataSource[index!].phoneNumber = phoneNumberTextField.text ?? ""
+            
+            db.updateData(
+                idNumber: ViewController.dataSource[index!].idNumber,
+                name: nameTextField.text ?? "",
+                phoneNumber: phoneNumberTextField.text ?? ""
+            )
+            //新增
+        } else {
+            ViewController.dataSource.append(contactPerson)
+            
+            db.insertData(idNumber: contactPerson.idNumber, name: contactPerson.name, phoneNumber: contactPerson.phoneNumber)
+        }
         
         backToPreviousView()
     }
@@ -92,6 +124,5 @@ class AddContactPersonViewController: UIViewController {
     @objc func backToPreviousView() {
         navigationController?.popViewController(animated: true)
     }
-    
     
 }
