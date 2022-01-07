@@ -27,7 +27,6 @@ class TableViewCell: UITableViewCell {
         phoneNumberLabel.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         phoneNumberLabel.textAlignment = .justified
 
-        
         self.addSubviews(nameLabel, phoneNumberLabel)
     }
     

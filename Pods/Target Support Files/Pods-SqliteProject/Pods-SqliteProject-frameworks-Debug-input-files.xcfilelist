@@ -1,2 +1,4 @@
 ${PODS_ROOT}/Target Support Files/Pods-SqliteProject/Pods-SqliteProject-frameworks.sh
+${BUILT_PRODUCTS_DIR}/OHMySQL/OHMySQL.framework
 ${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework
+${PODS_XCFRAMEWORKS_BUILD_DIR}/OHMySQL/MySQL.framework/MySQL

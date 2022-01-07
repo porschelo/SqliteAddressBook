@@ -1,18 +1,22 @@
 PODS:
+  - OHMySQL (3.0.0)
   - SQLite.swift (0.13.1):
     - SQLite.swift/standard (= 0.13.1)
   - SQLite.swift/standard (0.13.1)
 
 DEPENDENCIES:
+  - OHMySQL
   - SQLite.swift (~> 0.13.1)
 
 SPEC REPOS:
   trunk:
+    - OHMySQL
     - SQLite.swift
 
 SPEC CHECKSUMS:
+  OHMySQL: ebbe94e43cea486c84a934137331c6adaee8b964
   SQLite.swift: 30f2cdb09627181d472e55c4bc6b3b161f28de33
 
-PODFILE CHECKSUM: 0f9d7e86d9006046e79d352faa5ed3ef5df24991
+PODFILE CHECKSUM: 30846a20bd90d2865223a20a8ff08ec7e200f1a5
 
 COCOAPODS: 1.11.2

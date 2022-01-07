@@ -36,6 +36,14 @@ class ContactPersonViewController: UIViewController {
         
         view.backgroundColor = .white
         
+        setUpView()
+        
+        view.addSubviews(nameLabel, nameTextField, phoneNumberLabel, phoneNumberTextField, confirmButton)
+    }
+    
+    private func setUpView() {
+        
+        // navBar
         let returnButton = UIBarButtonItem(
           image: UIImage(systemName: "chevron.backward"),
             style:.plain ,
@@ -46,6 +54,7 @@ class ContactPersonViewController: UIViewController {
         
         navigationItem.leftBarButtonItem = returnButton
         
+        // subviews
         nameLabel = UILabel(frame: CGRect(x: 0, y: 100, width: view.frame.width , height: 50))
         nameLabel.text = "姓名："
         nameLabel.textAlignment = .center
@@ -85,37 +94,36 @@ class ContactPersonViewController: UIViewController {
         confirmButton.backgroundColor = .black
         confirmButton.setTitleColor(.white, for: .normal)
         confirmButton.center.x = view.center.x
-        confirmButton.addTarget(self, action: #selector(confirm), for: .touchUpInside)
+        confirmButton.addTarget(self, action: #selector(confirmButtonPress), for: .touchUpInside)
         
-        //編輯
+        // judge is edit or not
         if index != nil {
             nameTextField.text = ViewController.dataSource[index!].name
             phoneNumberTextField.text = ViewController.dataSource[index!].phoneNumber
         }
         
-        view.addSubviews(nameLabel, nameTextField, phoneNumberLabel, phoneNumberTextField, confirmButton)
     }
     
-    @objc func confirm(_ sender: UIButton) {
+    @objc func confirmButtonPress(_ sender: UIButton) {
         
         let contactPerson = Person(name: nameTextField.text ?? "", phoneNumber: phoneNumberTextField.text ?? "")
         let db = Database(withSqlite: "contact_person.sqlite3")
-        
-        //編輯
+        let remoteDB = RemoteDatabase()
+        // edit
         if index != nil {
             ViewController.dataSource[index!].name = nameTextField.text ?? ""
             ViewController.dataSource[index!].phoneNumber = phoneNumberTextField.text ?? ""
             
-            db.updateData(
+            remoteDB.updateData(
                 idNumber: ViewController.dataSource[index!].idNumber,
                 name: nameTextField.text ?? "",
                 phoneNumber: phoneNumberTextField.text ?? ""
             )
-            //新增
+            // add
         } else {
             ViewController.dataSource.append(contactPerson)
             
-            db.insertData(idNumber: contactPerson.idNumber, name: contactPerson.name, phoneNumber: contactPerson.phoneNumber)
+            remoteDB.insertData(idNumber: contactPerson.idNumber, name: contactPerson.name, phoneNumber: contactPerson.phoneNumber)
         }
         
         backToPreviousView()

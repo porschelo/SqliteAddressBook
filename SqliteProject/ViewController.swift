@@ -13,6 +13,8 @@ class ViewController: UIViewController {
     
     var db = Database(withSqlite: "contact_person.sqlite3")
     
+    var remoteDB = RemoteDatabase()
+    
     static var dataSource: [Person] = []
     
     var tableView: UITableView!
@@ -45,7 +47,6 @@ class ViewController: UIViewController {
         tableView.dataSource = self
         
         view.addSubview(tableView)
-        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,7 +56,7 @@ class ViewController: UIViewController {
     }
     
     func loadData() {
-        db.getData()
+        remoteDB.getData()
     }
     
     @objc func addContactPerson(_ sender: UIButton) {
@@ -80,7 +81,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        db.removeData(idNumber: ViewController.dataSource[indexPath.row].idNumber)
+        remoteDB.removeData(idNumber: ViewController.dataSource[indexPath.row].idNumber)
         
         ViewController.dataSource.remove(at: indexPath.row)
         

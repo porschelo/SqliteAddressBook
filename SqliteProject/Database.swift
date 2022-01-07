@@ -12,8 +12,7 @@ class Database {
     
     var db: Connection!
     var users: Table!
-    var id: Expression<Int64>!
-    var idNumber: Expression<Double>!
+    var idNumber: Expression<Int>!
     var name: Expression<String>!
     var phoneNumber: Expression<String>!
     
@@ -23,13 +22,11 @@ class Database {
             db = try Connection("\(path)/\(dbName)")
             
             users = Table("user")
-            id = Expression<Int64>("id")
-            idNumber = Expression<Double>("idNumber")
+            idNumber = Expression<Int>("idNumber")
             name = Expression<String>("name")
             phoneNumber = Expression<String>("phoneNumber")
             
             try db.run(users.create(ifNotExists: true) { t in
-                t.column(id, primaryKey: true)
                 t.column(idNumber)
                 t.column(name)
                 t.column(phoneNumber)
@@ -40,7 +37,7 @@ class Database {
         }
     }
     
-    func insertData(idNumber: Double, name: String, phoneNumber: String) {
+    func insertData(idNumber: Int, name: String, phoneNumber: String) {
         do {
             try db?.run(users.insert(self.idNumber <- idNumber, self.name <- name, self.phoneNumber <- phoneNumber))
         } catch {
@@ -49,7 +46,7 @@ class Database {
         
     }
     
-    func removeData(idNumber: Double) {
+    func removeData(idNumber: Int) {
         do {
             try db?.run(users.filter(self.idNumber == idNumber).delete())
         } catch {
@@ -57,7 +54,7 @@ class Database {
         }
     }
     
-    func updateData(idNumber: Double, name: String, phoneNumber: String) {
+    func updateData(idNumber: Int, name: String, phoneNumber: String) {
         do {
             try db?.run(users.filter(self.idNumber == idNumber).update(self.name <- name, self.phoneNumber <- phoneNumber))
         } catch {

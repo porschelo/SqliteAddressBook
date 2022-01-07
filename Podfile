@@ -6,5 +6,6 @@ target 'SqliteProject' do
   use_frameworks!
 
   pod 'SQLite.swift', '~> 0.13.1'
+  pod 'OHMySQL'
 
 end
