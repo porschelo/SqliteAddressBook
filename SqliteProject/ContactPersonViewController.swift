@@ -98,32 +98,51 @@ class ContactPersonViewController: UIViewController {
         
         // judge is edit or not
         if index != nil {
-            nameTextField.text = ViewController.dataSource[index!].name
-            phoneNumberTextField.text = ViewController.dataSource[index!].phoneNumber
+            nameTextField.text = Person.dataSource[index!].name
+            phoneNumberTextField.text = Person.dataSource[index!].phoneNumber
         }
         
     }
     
     @objc func confirmButtonPress(_ sender: UIButton) {
         
-        let contactPerson = Person(name: nameTextField.text ?? "", phoneNumber: phoneNumberTextField.text ?? "")
-        let db = Database(withSqlite: "contact_person.sqlite3")
-        let remoteDB = RemoteDatabase()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd, HH:mm:ss"
+        let nowString = formatter.string(from: Date())
+        
+        let contactPerson = Person(name: nameTextField.text ?? "", phoneNumber: phoneNumberTextField.text ?? "", editingDate: nowString)
+        
         // edit
         if index != nil {
-            ViewController.dataSource[index!].name = nameTextField.text ?? ""
-            ViewController.dataSource[index!].phoneNumber = phoneNumberTextField.text ?? ""
+            Person.dataSource[index!].name = nameTextField.text ?? ""
+            Person.dataSource[index!].phoneNumber = phoneNumberTextField.text ?? ""
             
-            remoteDB.updateData(
-                idNumber: ViewController.dataSource[index!].idNumber,
+            if RemoteDatabase.isConnectWithRemote {
+                RemoteDatabase.shared.updateData(
+                    idNumber: Person.dataSource[index!].idNumber,
+                    name: nameTextField.text ?? "",
+                    phoneNumber: phoneNumberTextField.text ?? "",
+                    editingDate: nowString
+                )
+            }
+            
+            LocalDatabase.shared.updateData(
+                idNumber: Person.dataSource[index!].idNumber,
                 name: nameTextField.text ?? "",
-                phoneNumber: phoneNumberTextField.text ?? ""
+                phoneNumber: phoneNumberTextField.text ?? "",
+                editingDate: nowString
             )
-            // add
+        // add
         } else {
-            ViewController.dataSource.append(contactPerson)
+            Person.dataSource.append(contactPerson)
             
-            remoteDB.insertData(idNumber: contactPerson.idNumber, name: contactPerson.name, phoneNumber: contactPerson.phoneNumber)
+            if RemoteDatabase.isConnectWithRemote {
+                RemoteDatabase.shared.insertData(idNumber: contactPerson.idNumber, name: contactPerson.name, phoneNumber: contactPerson.phoneNumber, editingDate: nowString)
+            } else {
+                LocalDatabase.shared.insertChangedIdData(idNumber: contactPerson.idNumber, name: contactPerson.name, phoneNumber: contactPerson.phoneNumber, editingDate: nowString, localChagneIsAddOrNot: true)
+            }
+            
+            LocalDatabase.shared.insertData(idNumber: contactPerson.idNumber, name: contactPerson.name, phoneNumber: contactPerson.phoneNumber, editingDate: nowString)
         }
         
         backToPreviousView()

@@ -17,7 +17,7 @@
 		473F95BC2784426C00EFD72B /* PersonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473F95BB2784426C00EFD72B /* PersonModel.swift */; };
 		473F95BE2784448A00EFD72B /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473F95BD2784448A00EFD72B /* Extension.swift */; };
 		47420F392785293000005F1E /* ContactPersonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47420F382785293000005F1E /* ContactPersonViewController.swift */; };
-		47B7124D2785520500B03FF2 /* Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B7124C2785520500B03FF2 /* Database.swift */; };
+		47B7124D2785520500B03FF2 /* LocalDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47B7124C2785520500B03FF2 /* LocalDatabase.swift */; };
 		7F07BA40A1DC8421FE2D346F /* Pods_SqliteProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37F15324E1A3B2B9E32C6A6D /* Pods_SqliteProject.framework */; };
 /* End PBXBuildFile section */
 
@@ -36,7 +36,7 @@
 		473F95BB2784426C00EFD72B /* PersonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonModel.swift; sourceTree = "<group>"; };
 		473F95BD2784448A00EFD72B /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		47420F382785293000005F1E /* ContactPersonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPersonViewController.swift; sourceTree = "<group>"; };
-		47B7124C2785520500B03FF2 /* Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
+		47B7124C2785520500B03FF2 /* LocalDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalDatabase.swift; sourceTree = "<group>"; };
 		5BC23536426A3EEC7F2F5C9D /* Pods-SqliteProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SqliteProject.debug.xcconfig"; path = "Target Support Files/Pods-SqliteProject/Pods-SqliteProject.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,15 +84,15 @@
 				473F95A52784374900EFD72B /* AppDelegate.swift */,
 				473F95A72784374900EFD72B /* SceneDelegate.swift */,
 				473F95A92784374900EFD72B /* ViewController.swift */,
-				47B7124C2785520500B03FF2 /* Database.swift */,
-				472B4D082786C4F200F06DB7 /* RemoteDatabase.swift */,
 				47420F382785293000005F1E /* ContactPersonViewController.swift */,
+				47B7124C2785520500B03FF2 /* LocalDatabase.swift */,
+				472B4D082786C4F200F06DB7 /* RemoteDatabase.swift */,
 				473F95B927843B8600EFD72B /* TableViewCell.swift */,
+				473F95BB2784426C00EFD72B /* PersonModel.swift */,
+				473F95BD2784448A00EFD72B /* Extension.swift */,
 				473F95AE2784374A00EFD72B /* Assets.xcassets */,
 				473F95B02784374A00EFD72B /* LaunchScreen.storyboard */,
 				473F95B32784374A00EFD72B /* Info.plist */,
-				473F95BB2784426C00EFD72B /* PersonModel.swift */,
-				473F95BD2784448A00EFD72B /* Extension.swift */,
 			);
 			path = SqliteProject;
 			sourceTree = "<group>";
@@ -226,7 +226,7 @@
 				473F95BE2784448A00EFD72B /* Extension.swift in Sources */,
 				473F95A62784374900EFD72B /* AppDelegate.swift in Sources */,
 				472B4D092786C4F200F06DB7 /* RemoteDatabase.swift in Sources */,
-				47B7124D2785520500B03FF2 /* Database.swift in Sources */,
+				47B7124D2785520500B03FF2 /* LocalDatabase.swift in Sources */,
 				473F95A82784374900EFD72B /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

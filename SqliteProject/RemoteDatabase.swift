@@ -10,79 +10,111 @@ import OHMySQL
 
 class RemoteDatabase {
     
+    static var shared: RemoteDatabase = {
+        let db = RemoteDatabase(userName: "root", password: "0000", serverName: "6.tcp.ngrok.io", dbName: "trainee", port: 17082,tableName: "user_information_table")
+        
+        return db
+    }()
+    
+    static var isConnectWithRemote: Bool = false
+    
     var coordinator: OHMySQLStoreCoordinator? = nil
     
-//    let dropQueryString: String
-//    let dropQueryRequest: OHMySQLQueryRequest
     let context = OHMySQLQueryContext()
     
-    init() {
-        if let user = OHMySQLUser(userName: "root", password: "0000", serverName: "6.tcp.ngrok.io", dbName: "trainee", port: 18899, socket: nil) {
+    var tableName: String = ""
+    
+    init(userName: String, password: String, serverName: String, dbName: String, port: Int, socket: String? = nil, tableName: String) {
+        
+        self.tableName = tableName
+        
+        if let user = OHMySQLUser(userName: userName, password: password, serverName: serverName, dbName: dbName, port: 17082, socket: nil) {
             coordinator = OHMySQLStoreCoordinator(user: user)
             coordinator?.encoding = .UTF8MB4
             coordinator?.connect()
             
             context.storeCoordinator = coordinator!
+            
+            createTable(tableName: tableName)
         }
-
-//        dropQueryString = "DROP TABLE `table_name2`"
-//        dropQueryRequest = OHMySQLQueryRequest(queryString: dropQueryString)
     }
     
     deinit {
         coordinator?.disconnect()
     }
     
-    func insertData(idNumber: Int, name: String, phoneNumber: String) {
+    func insertData(idNumber: Int, name: String, phoneNumber: String, editingDate: String) {
         do {
-            let query = OHMySQLQueryRequestFactory.insert("table_name2", set: ["idNumber": idNumber, "name": name, "phoneNumber": phoneNumber])
+            let query = OHMySQLQueryRequestFactory.insert(tableName, set: ["idNumber": idNumber, "name": name, "phoneNumber": phoneNumber, "editingDate": editingDate])
             try context.execute(query)
         } catch {
             print(error)
         }
-        
     }
     
     func removeData(idNumber: Int) {
         do {
-            let query = OHMySQLQueryRequestFactory.delete("table_name2", condition: "idNumber=\(idNumber)")
+            let query = OHMySQLQueryRequestFactory.delete(tableName, condition: "idNumber=\(idNumber)")
             try context.execute(query)
         } catch {
             print(error)
         }
     }
     
-    func updateData(idNumber: Int, name: String, phoneNumber: String) {
+    func updateData(idNumber: Int, name: String, phoneNumber: String, editingDate: String) {
         do {
-            let query = OHMySQLQueryRequestFactory.update("table_name2", set: ["idNumber": idNumber, "name": name, "phoneNumber": phoneNumber], condition: "idNumber=\(idNumber)")
+            let query = OHMySQLQueryRequestFactory.update(tableName, set: ["idNumber": idNumber, "name": name, "phoneNumber": phoneNumber, "editingDate": editingDate], condition: "idNumber=\(idNumber)")
             try context.execute(query)
         } catch {
             print(error)
         }
     }
     
-    func getData() {
-        ViewController.dataSource = []
+    func getData() -> [Person] {
+        var data: [Person] = []
         
         do {
-            let query = OHMySQLQueryRequestFactory.select("table_name2", condition: nil)
+            let query = OHMySQLQueryRequestFactory.select(tableName, condition: nil)
             let userDatas = try context.executeQueryRequestAndFetchResult(query)
             for userData in userDatas {
                 if let idNumber = userData["idNumber"] as? Int,
                    let name = userData["name"] as? String,
-                   let phoneNumber = userData["phoneNumber"] as? String {
-                    ViewController.dataSource.append(Person(idNumber: idNumber, name: name, phoneNumber: phoneNumber))
+                   let phoneNumber = userData["phoneNumber"] as? String,
+                   let editingDate = userData["editingDate"] as? String {
+                    data.append(Person(idNumber: idNumber, name: name, phoneNumber: phoneNumber, editingDate: editingDate))
                 }
             }
         } catch {
             print(error)
         }
+        
+        return data
     }
     
     func removeAll() {
         do {
-            let query = OHMySQLQueryRequestFactory.delete("table_name2", condition: nil)
+            let query = OHMySQLQueryRequestFactory.delete(tableName, condition: nil)
             try context.execute(query)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func createTable(tableName: String) {
+        let createQueryString = "CREATE TABLE `\(tableName)` (`idNumber` int, `name` varchar(10), `phoneNumber` varchar(10), `editingDate` varchar(30))"
+        let createQueryRequest = OHMySQLQueryRequest(queryString: createQueryString)
+        do {
+            try context.execute(createQueryRequest)
+        } catch {
+            print(error)
+        }
+    }
+    
+    func removeTable(tableName: String) {
+        let dropQueryString = "DROP TABLE `\(tableName)`"
+        let dropQueryRequest = OHMySQLQueryRequest(queryString: dropQueryString)
+        do {
+            try context.execute(dropQueryRequest)
         } catch {
             print(error)
         }
